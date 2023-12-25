@@ -1,7 +1,7 @@
 // Массив доменов, с которых разрешены кросс-доменные запросы
 const ALLOWED_CORS = [
-  //"https://jupiter.nomoredomainsmonster.ru",api.jupiter.my-movies.nomoredomainsmonster.ru
-  //"http://jupiter.nomoredomainsmonster.ru",
+  'https://jupiter.movies.nomoredomainsmonster.ru',
+  'http://jupiter.movies.nomoredomainsmonster.ru',
   'http://localhost:3001',
   'http://localhost:3000',
 ];
