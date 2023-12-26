@@ -11,15 +11,14 @@ module.exports = async (req, res, next) => {
     if (!token) {
       throw new UnauthorizedError("Не правильные email или password");
     }
-    const validTocken = token.replace("Bearer ", "");//отрезать Bearer
-    //console.log(`validTocken: ${validTocken}`)
+    const validTocken = token.replace("Bearer ", "");
     payload = await jwt.verify(validTocken, NODE_ENV === 'production'? JWT_SECRET : "dev-secret");
   } catch (err) {
     if (err.message === "NotAutanticate") {
-      return next(new UnauthorizedError("Необходима авторизация"));//401
+      return next(new UnauthorizedError("Необходима авторизация"));
     }
     if ((err.name = "JsonWebTokenError")) {
-      return next(new UnauthorizedError("С токеном что-то не так"));//401
+      return next(new UnauthorizedError("С токеном что-то не так"));
     } else {
       return next(err);
     }

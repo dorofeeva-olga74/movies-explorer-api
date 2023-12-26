@@ -1,6 +1,4 @@
 const express = require("express");
-//const { json } = require("express");
-//const path = require("path");
 //Ключ заносят в переменные окружения в файл с расширением .env в корне проекта и
 //Чтобы загрузить этот файл в Node.js, нужно установить в проект модуль dotenv
 const dotenv = require("dotenv");
@@ -16,7 +14,7 @@ const { requestLogger, errorLogger } = require("./middlewares/logger.js");
 
 const mongoose = require("mongoose");
 
-//const bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 
 //'helmet' Заголовки безопасности можно проставлять автоматически// npm i
 const helmet = require("helmet");
@@ -30,25 +28,24 @@ const app = express();
 
 const NotFoundError = require("./errors/NotFoundError.js");
 const ERROR_INTERNAL_SERVER = 500;//вынесены магические числа
-//const _dirname = path.resolve();
 
-//app.use(bodyParser.json()); // для собирания JSON-формата
-//app.use(bodyParser.urlencoded({ extended: true })); // для приёма веб-страниц внутри POST-запроса
+app.use(bodyParser.json()); // для собирания JSON-формата
+app.use(bodyParser.urlencoded({ extended: true })); // для приёма веб-страниц внутри POST-запроса
+
 // Слушаем 3000 порт
 mongoose.connect(MONGO_URL || "mongodb://127.0.0.1:27017/bitfilmsdb", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  family: 4,
 }).then(() => {
   console.log("Connected to MongoDB");
-})
+  })
   .catch((error) => {
     console.log("Error connecting to MongoDB:", error);
   });
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // за 15 минут
-  max: 10000 // можно совершить максимум 100 запросов с одного IP//100!!!!!
+  max: 100 // можно совершить максимум 100 запросов с одного IP
 });
 
 //мидлвэр
@@ -59,18 +56,7 @@ app.use(cors);
 app.use(requestLogger); // подключаем логгер запросов до всех обработчиков роутов
 app.use(limiter);// подключаем rate-limiter
 
-// КРАШ-ТЕСТ сервера
-// app.get("/crash-test", () => {
-//   setTimeout(() => {
-//     throw new Error("Сервер сейчас упадёт");
-//   }, 0);
-// });
-
-//app.use(express.static(path.join(_dirname, "public")));
-//app.use(json());
-//app.use("/", router); // запускаем роутер
-app.use(API_URL, router); // запускаем роутер
-
+app.use(`${API_URL}`, router); // запускаем роутер
 // errors
 app.use(errorLogger); // подключаем логгер ошибок
 app.use(function (req, res, next) {
@@ -90,7 +76,7 @@ app.use((err, req, res, next) => { // централизованный обра�
   next();
 });
 
-app.listen(PORT || 3000, () => {//*** */
+app.listen(PORT || 3000, () => {
   // Если всё работает, консоль покажет, какой порт приложение слушает
   console.log(`App listening on port ${PORT}`)
 })

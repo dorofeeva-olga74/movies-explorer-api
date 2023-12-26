@@ -4,10 +4,9 @@ const validator = require('validator');
 const UnauthorizedError = require('../errors/UnauthorizedError.js');
 
 const userSchema = new mongoose.Schema({
-  name: { // у пользователя есть имя — опишем требования к имени в схеме:
+  name: {
     type: String, // имя — это строка
-    //unique: true,
-    //required: true, // имя — обязательное поле
+    required: true, // имя — обязательное поле
     minlength: [2, "Mинимальная длина  — 2 символа"],
     maxlength: [30, "Максимальная длина— 30 символов"],
   },
@@ -29,9 +28,6 @@ const userSchema = new mongoose.Schema({
   },
 }, { versionKey: false });
 
-// добавим метод findUserByCredentials схеме пользователя//Функция findUserByCredentials
-//не должна быть стрелочной. Это сделано, чтобы мы могли пользоваться this
-// у него будет два параметра — почта и пароль
 userSchema.statics.findUserByCredentials = function findUserByCredentials(email, password) {
   return this.findOne({ email }).select("+password")
     .then((user) => {

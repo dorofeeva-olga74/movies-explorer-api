@@ -18,7 +18,6 @@ module.exports.getMovies = async (req, res) => {
 module.exports.createMovie = async (req, res, next) => {
   const { country, director, duration, year, description, image,
     trailerLink, thumbnail, movieId, nameRU, nameEN } = req.body;
-  // console.log(`country ${country}`)
   try {
     const newMovie = await Movie.create({country, director, duration, year, description, image,
       trailerLink, thumbnail, movieId, nameRU, nameEN, owner: req.user._id });
@@ -35,13 +34,11 @@ module.exports.createMovie = async (req, res, next) => {
 module.exports.deleteMovie = async (req, res, next) => {
   const objectID = req.params.movieId;
   await Movie.findById(objectID)
-    //.populate(["likes", "owner"])//???
     .orFail(() => {
       throw new NotFoundError("Фильм не найден");
     })
     .then((movie) => {
       const owner = movie.owner._id + '';
-      //const owner = movie.owner.toString();
       if (req.user._id === owner) {
         Movie.deleteOne(movie)
             .then(() => {

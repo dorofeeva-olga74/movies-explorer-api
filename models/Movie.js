@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
-//const patternURL = /https?:\/\/(\w{3}\.)?[1-9a-z\-.]{1,}\w\w(\/[1-90a-z.,_@%&?+=~/-]{1,}\/?)?#?/i;
 
 const movieSchema = new mongoose.Schema({
   country: {//страна создания фильма. Обязательное поле-строка.

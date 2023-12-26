@@ -21,7 +21,7 @@
 
 ## Ссылки на проект
 
-IP-адрес 158.160.60.163
+IP-адрес 178.154.201.94
 
 Backend https://api.jupiter.movies.nomoredomainsmonster.ru
 
