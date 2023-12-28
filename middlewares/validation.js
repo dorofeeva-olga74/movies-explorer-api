@@ -1,4 +1,5 @@
 const { Joi, celebrate } = require('celebrate');
+
 const patternURL = /https?:\/\/(\w{3}\.)?[1-9a-z\-.]{1,}\w\w(\/[1-90a-z.,_@%&?+=~/-]{1,}\/?)?#?/i;
 
 const updateUserValidator = celebrate({
@@ -52,4 +53,4 @@ module.exports = {
   createUserValidator,
   createMovieValidator,
   deleteMovieValidator,
-}
+};

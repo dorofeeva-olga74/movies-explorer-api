@@ -1,14 +1,20 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const validator = require('validator');
-const UnauthorizedError = require('../errors/UnauthorizedError.js');
+const UnauthorizedError = require('../errors/UnauthorizedError');
+const {
+  INVALID_EMAIL,
+  INVALID_EMAIL_OR_PASSWORD,
+  MIN_LENGTH,
+  MAX_LENGTH,
+} = require('../utils/constants');
 
 const userSchema = new mongoose.Schema({
   name: {
     type: String, // имя — это строка
     required: true, // имя — обязательное поле
-    minlength: [2, "Mинимальная длина  — 2 символа"],
-    maxlength: [30, "Максимальная длина— 30 символов"],
+    minlength: [2, MIN_LENGTH],
+    maxlength: [30, MAX_LENGTH],
   },
   email: {
     type: String, //  — это строка
@@ -18,7 +24,7 @@ const userSchema = new mongoose.Schema({
       validator(email) {
         validator.isEmail(email);
       },
-      message: 'Введите корректный email',
+      message: INVALID_EMAIL,
     },
   },
   password: {
@@ -29,17 +35,17 @@ const userSchema = new mongoose.Schema({
 }, { versionKey: false });
 
 userSchema.statics.findUserByCredentials = function findUserByCredentials(email, password) {
-  return this.findOne({ email }).select("+password")
+  return this.findOne({ email }).select('+password')
     .then((user) => {
       // не нашёлся — отклоняем промис
       if (!user) {
-        throw new UnauthorizedError("Неправильные почта или пароль");
+        throw new UnauthorizedError(INVALID_EMAIL_OR_PASSWORD);
       }
       // нашёлся — сравниваем хеши
       return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {
-            throw new UnauthorizedError("Неправильные почта или пароль");
+            throw new UnauthorizedError(INVALID_EMAIL_OR_PASSWORD);
           }
           return user;
         });
@@ -47,4 +53,4 @@ userSchema.statics.findUserByCredentials = function findUserByCredentials(email,
 };
 
 // создаём модель и экспортируем её
-module.exports = mongoose.model("user", userSchema);
+module.exports = mongoose.model('user', userSchema);

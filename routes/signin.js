@@ -1,12 +1,10 @@
-const { login } = require("../controllers/users.js");
-const { errors } = require("celebrate");
-const { loginValidator } = require("../middlewares/validation.js");
-
+const { errors } = require('celebrate');
 // создадим express router
-const signinRouter = require("express").Router();
+const signinRouter = require('express').Router();
+const { loginValidator } = require('../middlewares/validation');
+const { login } = require('../controllers/users');
 
-
-signinRouter.post("/", loginValidator, login);
+signinRouter.post('/', loginValidator, login);
 
 signinRouter.use(errors());// обработчик ошибок celebrate
 

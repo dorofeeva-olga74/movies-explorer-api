@@ -1,15 +1,15 @@
 // создадим express router
-const movieRouter = require("express").Router();
-const { getMovies, createMovie, deleteMovie } = require("../controllers/movies.js");
-const { createMovieValidator, deleteMovieValidator } = require("../middlewares/validation.js");
-const { errors } = require("celebrate");
+const movieRouter = require('express').Router();
+const { errors } = require('celebrate');
+const { getMovies, createMovie, deleteMovie } = require('../controllers/movies');
+const { createMovieValidator, deleteMovieValidator } = require('../middlewares/validation');
 
 // Здесь роутинг
-movieRouter.get("/", getMovies);
+movieRouter.get('/', getMovies);
 
-movieRouter.post("/", createMovieValidator, createMovie);
+movieRouter.post('/', createMovieValidator, createMovie);
 
-movieRouter.delete("/:movieId", deleteMovieValidator, deleteMovie);
+movieRouter.delete('/:movieId', deleteMovieValidator, deleteMovie);
 
 movieRouter.use(errors()); // обработчик ошибок celebrate
 
