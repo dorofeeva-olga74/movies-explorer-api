@@ -13,12 +13,13 @@ const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const cors = require('./middlewares/cors');
+
 const router = require('./routes'); // импортируем роутеры
 
 const app = express();
 
 const NotFoundError = require('./errors/NotFoundError');
-const { ERROR_NOTFOUND_MESSAGE, CRASH_SERVER_TEST } = require('./utils/constants');
+const { ERROR_NOTFOUND_MESSAGE } = require('./utils/constants');
 const errorInternalServer = require('./middlewares/errorInternalServer');
 
 const limiter = require('./middlewares/limiter');
@@ -27,11 +28,11 @@ app.use(bodyParser.json()); // для собирания JSON-формата
 app.use(bodyParser.urlencoded({ extended: true })); // для приёма веб-страниц внутри POST-запроса
 
 // Слушаем 3000 порт
-mongoose.connect(MONGO_URL, {
+mongoose.connect(MONGO_URL || 'mongodb://127.0.0.1:27017/mestodb', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  family: 4,
 });
-
 // мидлвэр
 app.use(helmet());
 app.use(express.json());
@@ -40,20 +41,12 @@ app.use(cors);
 app.use(requestLogger); // подключаем логгер запросов до всех обработчиков роутов
 app.use(limiter);// подключаем rate-limiter
 
-// КРАШ-ТЕСТ сервера
-app.get('/crash-test', () => {
-  setTimeout(() => {
-    throw new Error(CRASH_SERVER_TEST);
-  }, 0);
-});
-
 app.use(`${API_URL}`, router); // запускаем роутер
 // errors
 app.use(errorLogger); // подключаем логгер ошибок
 app.use((req, res, next) => next(new NotFoundError(ERROR_NOTFOUND_MESSAGE)));
 
 app.use(errors());// обработчик ошибок celebrate
-// здесь обрабатываем все ошибки
 app.use(errorInternalServer);
 
 app.listen(PORT || 3000);

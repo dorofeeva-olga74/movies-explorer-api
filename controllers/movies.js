@@ -70,7 +70,6 @@ module.exports.deleteMovie = async (req, res, next) => {
       throw new NotFoundError(ERROR_NOTFOUND_MESSAGE_MOVIE);
     })
     .then((movie) => {
-      // const owner = movie.owner._id + '';
       const owner = movie.owner.toString();
       if (req.user._id === owner) {
         Movie.deleteOne(movie);

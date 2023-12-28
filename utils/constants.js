@@ -13,7 +13,6 @@ const INVALID_EMAIL_OR_PASSWORD = 'Неправильные почта или п
 const MIN_LENGTH = 'Mинимальная длина  — 2 символа';
 const MAX_LENGTH = 'Максимальная длина— 30 символов';
 const CAST_ERROR = 'CastError';
-const CRASH_SERVER_TEST = 'Сервер сейчас упадёт';
 
 module.exports = {
   ERROR_BADREQUEST_MESSAGE,
@@ -30,5 +29,4 @@ module.exports = {
   MIN_LENGTH,
   MAX_LENGTH,
   CAST_ERROR,
-  CRASH_SERVER_TEST,
 };

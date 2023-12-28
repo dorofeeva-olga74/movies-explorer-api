@@ -63,7 +63,8 @@ module.exports.updateUser = async (req, res, next) => {
     }
     if (err instanceof mongoose.Error.ValidationError) {
       return next(new BadRequest(ERROR_NOTFOUND_MESSAGE_USER));
-    } return next(err);
+    }
+    return next(err);
   }
 };
 
