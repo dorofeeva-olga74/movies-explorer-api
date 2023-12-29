@@ -1,8 +1,8 @@
 const { errors } = require('celebrate');
 // создадим express router
 const signinRouter = require('express').Router();
-const { loginValidator } = require('../middlewares/validation');
 const { login } = require('../controllers/users');
+const { loginValidator } = require('../middlewares/validation');
 
 signinRouter.post('/', loginValidator, login);
 
