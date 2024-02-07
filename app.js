@@ -28,7 +28,7 @@ app.use(bodyParser.json()); // для собирания JSON-формата
 app.use(bodyParser.urlencoded({ extended: true })); // для приёма веб-страниц внутри POST-запроса
 
 // Слушаем 3000 порт
-mongoose.connect(MONGO_URL || 'mongodb://127.0.0.1:27017/mestodb', {
+mongoose.connect(MONGO_URL || 'mongodb://localhost:27017/bitfilmsdb', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   family: 4,
@@ -49,4 +49,4 @@ app.use((req, res, next) => next(new NotFoundError(ERROR_NOTFOUND_MESSAGE)));
 app.use(errors());// обработчик ошибок celebrate
 app.use(errorInternalServer);
 
-app.listen(PORT || 3000);
+app.listen(PORT || 3001);
