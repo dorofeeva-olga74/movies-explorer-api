@@ -10,5 +10,5 @@ module.exports = (err, req, res, next) => { // централизованный 
       ? ERROR_SERVER_MESSAGE
       : message,
   });
-  next();
+  return next();
 };

@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 const { errors } = require('celebrate');
 // создадим express router
 const userRouter = require('express').Router();

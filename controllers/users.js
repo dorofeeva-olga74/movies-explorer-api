@@ -1,3 +1,4 @@
+/* eslint-disable semi */
 require('dotenv').config();
 const mongoose = require('mongoose');
 
