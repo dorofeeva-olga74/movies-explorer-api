@@ -24,7 +24,7 @@ const User = require('../models/User');
 
 const ERROR_CODE_DUPLICATE_MONGO = 11000; // вынесены магические числа
 const SOLT_ROUNDS = 10; // хешируем пароль
-const { NODE_ENV, JWT_SECRET = 'some-secret-key' } = process.env;
+const { NODE_ENV, JWT_SECRET } = process.env;
 
 module.exports.createUser = async (req, res, next) => {
   try {
@@ -72,27 +72,48 @@ module.exports.createUser = async (req, res, next) => {
 
 // const { JWT_SECRET = 'some-secret-key' } = process.env;
 
-module.exports.getCurrentUser = async (req, res, next) => {
-  try {
-    console.log(req.user);
-    const currentUser = await User.findById(req.user._id);
-    console.log(`currUser: ${currentUser}`);
-    if (!currentUser) {
-      console.log('tut3');
+// module.exports.getCurrentUser = async (req, res, next) => {
+//   try {
+//     // console.log(req.user);
+//     const currentUser = await User.findById(req.user._id)
+//       .orFail(() => {
+//         console.log('tut3');
+//         throw new NotFoundError(ERROR_NOTFOUND_MESSAGE_USER);
+//       })
+//     // console.log('tut4');
+//     return res.status(httpConstants.HTTP_STATUS_OK).send(currentUser);
+//     // console.log(`currUser: ${currentUser}`);
+//     // if (!currentUser) {
+//     //   console.log('tut3');
+//     //   throw new NotFoundError(ERROR_NOTFOUND_MESSAGE_USER);
+//     // } else {
+//     //   console.log('tut4');
+//     //   return res.status(httpConstants.HTTP_STATUS_OK).send(currentUser);
+//     // }
+//   } catch (err) {
+//     // console.log('tut5');
+//     if (err instanceof mongoose.Error.ValidationError) {
+//       return next(new BadRequest(ERROR_NOTFOUND_MESSAGE_USER));
+//     }
+//     return next(err);
+//   }
+// };
+module.exports.getCurrentUser = (req, res, next) => {
+  User.findById(req.user._id)
+  // const currentUser = await User.findById(req.user._id)
+    .orFail(() => {
       throw new NotFoundError(ERROR_NOTFOUND_MESSAGE_USER);
-    } else {
-      console.log('tut4');
-      return res.status(httpConstants.HTTP_STATUS_OK).send(currentUser);
-    }
-  } catch (err) {
-    console.log('tut5');
-    if (err instanceof mongoose.Error.ValidationError) {
-      return next(new BadRequest(ERROR_NOTFOUND_MESSAGE_USER));
-    }
-    return next(err);
-  }
+    })
+    .then((currentUser) => res.status(httpConstants.HTTP_STATUS_OK).send(currentUser))
+    // return res.status(httpConstants.HTTP_STATUS_OK).send(currentUser);
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new BadRequest(ERROR_NOTFOUND_MESSAGE_USER));
+      } else {
+        next(err);
+      }
+    });
 };
-
 // Создайте контроллер и роут для получения информации о пользователе
 // module.exports.getCurrentUser = async (req, res, next) => {
 //   try {
@@ -122,6 +143,24 @@ module.exports.updateUser = async (req, res, next) => {
   }
 };
 
+// module.exports.updateUser = (req, res, next) => {
+//   const { name, email } = req.body;
+//   User.findByIdAndUpdate(req.user._id, { name, email }, { new: true, runValidators: true })
+//     .orFail(() => {
+//       throw new NotFound(ERROR_404_MESSAGE_USER);
+//     })
+//     .then((updatedUser) => res.status(200).send(updatedUser))
+//     .catch((err) => {
+//       if (err.code === 11000) {
+//         next(new Conflict(ERROR_409_MESSAGE_USER));
+//       } else if (err.name === 'ValidationError') {
+//         next(new BadRequest(ERROR_400_MESSAGE));
+//       } else {
+//         next(err);
+//       }
+//     });
+// };
+
 module.exports.login = async (req, res, next) => {
   const { email, password } = req.body;
   try {
@@ -131,7 +170,6 @@ module.exports.login = async (req, res, next) => {
     //   expiresIn: ' 7d ',
     // });
     return res.status(httpConstants.HTTP_STATUS_OK).send({ token });
-    // return res.status(httpConstants.HTTP_STATUS_OK).send({ token });
   } catch (err) {
     return next(err);
   }

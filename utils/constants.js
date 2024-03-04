@@ -7,6 +7,7 @@ const ERROR_NOTFOUND_MESSAGE_USER = 'Переданы некорректные �
 const ERROR_UNAUTHORIZED_MESSAGE = 'Необходима авторизация'; // 401
 
 const ERROR_SERVER_MESSAGE = 'На сервере произошла ошибка'; // 500
+const DELLETE_MESSAGE = 'Фильм удален';
 const INVALID_URL = 'Введите корректную ссылку';
 const INVALID_EMAIL = 'Введите корректный email';
 const INVALID_EMAIL_OR_PASSWORD = 'Неправильные почта или пароль';
@@ -22,6 +23,7 @@ module.exports = {
   ERROR_NOTFOUND_MESSAGE_MOVIE,
   ERROR_NOTFOUND_MESSAGE_USER,
   ERROR_UNAUTHORIZED_MESSAGE,
+  DELLETE_MESSAGE,
   ERROR_SERVER_MESSAGE,
   INVALID_URL,
   INVALID_EMAIL,
