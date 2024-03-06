@@ -16,7 +16,6 @@ router.use(auth);/// защищаем доступ к роутам, распол
 router.use('/users', userRouter);
 router.use('/movies', movieRouter);
 router.use('*', (req, res, next) => {
-  // console.log('tut8');
   next(new NotFoundError(ERROR_NOTFOUND_MESSAGE));
 });
 

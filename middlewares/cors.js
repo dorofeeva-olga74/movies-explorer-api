@@ -4,8 +4,6 @@ const ALLOWED_CORS = [
   'http://jupiter.movies.nomoredomainsmonster.ru',
   'http://localhost:3000/',
   'http://localhost:3001/',
-  'http://localhost:3000',
-  'http://localhost:3001',
 ];
 const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
 
