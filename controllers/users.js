@@ -27,8 +27,8 @@ module.exports.createUser = async (req, res, next) => {
     const hash = await bcrypt.hash(password, SOLT_ROUNDS);
     const newUser = await User.create({ name, email, password: hash });
     return res.status(httpConstants.HTTP_STATUS_CREATED).send({
-      name: newUser.name,
       _id: newUser._id,
+      name: newUser.name,
       email: newUser.email,
     });
   } catch (err) {
@@ -40,15 +40,17 @@ module.exports.createUser = async (req, res, next) => {
     } return next(err);
   }
 };
-
 module.exports.getCurrentUser = async (req, res, next) => {
   try {
     const currentUser = await User.findById(req.user._id)
       .orFail(() => {
         throw new NotFoundError(ERROR_NOTFOUND_MESSAGE_USER);
-      });
+      })
     return res.status(httpConstants.HTTP_STATUS_OK).send(currentUser);
   } catch (err) {
+    if (err instanceof mongoose.Error.ValidationError) {
+      return next(new BadRequest(ERROR_NOTFOUND_MESSAGE_USER));
+    }
     return next(err);
   }
 };
@@ -73,9 +75,24 @@ module.exports.login = async (req, res, next) => {
   const { email, password } = req.body;
   try {
     const user = await User.findUserByCredentials(email, password);
-    const token = await jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
+    const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'some-secret-key', { expiresIn: '7d' });
     return res.status(httpConstants.HTTP_STATUS_OK).send({ token });
   } catch (err) {
     return next(err);
   }
 };
+
+// module.exports.getCurrentUser = (req, res, next) => {
+//   User.findById(req.user._id)
+//     .orFail(() => {
+//       throw new NotFoundError(ERROR_NOTFOUND_MESSAGE_USER);
+//     })
+//     .then((currentUser) => res.status(httpConstants.HTTP_STATUS_OK).send(currentUser))
+//     .catch((err) => {
+//       if (err.name === 'CastError') {
+//         next(new BadRequest(ERROR_NOTFOUND_MESSAGE_USER));
+//       } else {
+//         next(err);
+//       }
+//     });
+// };

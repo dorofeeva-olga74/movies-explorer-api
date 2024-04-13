@@ -1,4 +1,5 @@
 const { errors } = require('celebrate');
+
 // создадим express router
 const signinRouter = require('express').Router();
 const { login } = require('../controllers/users');
